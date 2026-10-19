@@ -1,0 +1,33 @@
+
+name: Build Runner PSP
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container:
+      image: pspdev/pspdev:latest
+
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Compilar Runner PSP
+        run: |
+          make clean
+          make
+
+      - name: Verificar executável
+        run: test -s EBOOT.PBP
+
+      - name: Disponibilizar para download
+        uses: actions/upload-artifact@v4
+        with:
+          name: Runner-PSP
+          path: EBOOT.PBP
